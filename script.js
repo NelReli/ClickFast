@@ -3,41 +3,42 @@ let timeLeft = 5;
 let timerId;
 let gameActive = false;
 
-const button = document.getElementById("button-clicker");
 const scoreDisplay = document.getElementById("score");
 const timerDisplay = document.getElementById("timer");
-
-// Fonction de mise à jour du score
-button.addEventListener("click", () => {
-    if (!gameActive) return;
-
-    score++;
-    scoreDisplay.textContent = score;
-});
-
-// Lancer le jeu quand le bouton est activé
-button.addEventListener("click", () => {
-    if (!gameActive) {
-        startGame();
-    }
-});
 
 function startGame() {
     score = 0;
     timeLeft = 5;
-    scoreDisplay.textContent = score;
-    timerDisplay.textContent = `Temps restant : ${timeLeft}s`;
     gameActive = true;
 
-// Compte à rebours
+    if (scoreDisplay && timerDisplay) {
+        scoreDisplay.textContent = score;
+        timerDisplay.textContent = `Temps restant : ${timeLeft}s`;
+    }
+
     timerId = setInterval(() => {
         timeLeft--;
-        timerDisplay.textContent = `Temps restant : ${timeLeft}s`;
+        if (timerDisplay) {
+            timerDisplay.textContent = `Temps restant : ${timeLeft}s`;
+        }
 
         if (timeLeft === 0) {
-        clearInterval(timerId);
-        gameActive = false;
-        timerDisplay.textContent = `⏱️ Temps écoulé ! Ton score : ${score}`;
+            clearInterval(timerId);
+            gameActive = false;
+            if (timerDisplay) {
+                timerDisplay.textContent = `⏱️ Temps écoulé ! Ton score : ${score}`;
+            }
         }
     }, 1000);
 }
+
+function incrementScore() {
+    if (gameActive) return;
+    score++;
+    if (scoreDisplay) {
+        scoreDisplay.textContent = score;
+    }
+}
+
+// Pour les tests
+module.exports = { startGame, incrementScore };
